@@ -1,0 +1,751 @@
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: 'Montserrat', sans-serif; color: #2E2A2D; background: #F7F3EA; }
+button, a { font: inherit; }
+button { cursor: pointer; }
+
+:root {
+  --purple: #34164E;
+  --purple-deep: #38204D;
+  --ivory: #F7F3EA;
+  --blush: #E7D9DE;
+  --mauve: #A88BA6;
+  --grey: #D8D4D2;
+  --charcoal: #2E2A2D;
+}
+
+/* ---------- Navbar ---------- */
+/* A floating rounded frame, inset from the edges, with a constant
+   translucent black fill — reads consistently whether it sits over the
+   photograph or over a lighter section beneath it. */
+.navbar {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 50;
+  border-radius: 500px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  transition: box-shadow .4s ease, border-radius .3s ease;
+}
+.navbar.menu-open { border-radius: 28px; }
+.navbar.scrolled { box-shadow: 0 12px 32px rgba(0, 0, 0, .18); }
+.navbar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: .85rem clamp(1.1rem, 3vw, 1.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar-mark { display: flex; align-items: center; color: var(--ivory); }
+.navbar-mark-svg { height: 1.8rem; width: auto; color: inherit; }
+
+.navbar-links { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2rem); }
+.navbar-links a {
+  color: var(--ivory);
+  text-decoration: none;
+  font-size: .66rem;
+  letter-spacing: .18em;
+  font-weight: 600;
+  opacity: .9;
+  transition: opacity .3s ease;
+  white-space: nowrap;
+}
+.navbar-links a:hover, .navbar-links a:focus-visible { opacity: 1; }
+
+.navbar-cta {
+  color: var(--ivory);
+  border: 1px solid rgba(247, 243, 234, .7);
+  padding: .55rem 1.1rem;
+  border-radius: 999px;
+  transition: background-color .3s ease;
+}
+.navbar-cta:hover, .navbar-cta:focus-visible { background: rgba(247, 243, 234, .16); }
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--ivory);
+  padding: .3rem;
+}
+
+.navbar-mobile-menu {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .navbar-links { display: none; }
+  .navbar-toggle { display: flex; }
+
+  .navbar-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: .25rem clamp(1.1rem, 3vw, 1.75rem) 1.5rem;
+  }
+  .navbar-mobile-menu a {
+    color: var(--ivory);
+    text-decoration: none;
+    font-size: .78rem;
+    letter-spacing: .16em;
+    font-weight: 600;
+  }
+  .navbar-mobile-menu .navbar-cta { margin-top: .4rem; align-self: flex-start; }
+}
+
+/* Fixed floating navbar needs sections to offset their scroll-anchor target */
+.section, #hero { scroll-margin-top: 100px; }
+
+/* Full-bleed portrait as an editorial campaign opening. Content sits in the
+   lower third, like a fashion-campaign lockup, rather than dead-center —
+   the photograph is the hero, the text is a quiet signature beneath it. */
+.hero {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.hero-image-layer { position: absolute; inset: -6% -6%; will-change: transform; }
+/* Full-bleed photo. object-position sits between the two faces (~42% down)
+   so the crop keeps both of them in frame on any screen. */
+.hero-image { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block; }
+
+/* Placeholder shown until public/images/hero.jpg is supplied — keeps layout,
+   spacing and overlay contrast identical to the real photograph. */
+.hero-image-placeholder {
+  background: linear-gradient(160deg, #5a2c80 0%, var(--purple) 45%, #2c1240 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+}
+.hero-image-placeholder .placeholder-label { font-size: .75rem; letter-spacing: .3em; font-weight: 600; opacity: .85; }
+.hero-image-placeholder .placeholder-hint { font-size: .65rem; letter-spacing: .12em; opacity: .55; }
+
+/* Bottom-weighted vignette: near-transparent at the top so the couple's
+   faces read clearly, deepening toward the base so type stays legible
+   without a heavy overlay across the whole photograph. */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 14, 29, .22);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 1.5rem clamp(3rem, 8vh, 5.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .65rem;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, .35);
+}
+.tm-mark { line-height: .8; display: flex; justify-content: center; }
+.hero-content-video { padding-bottom: clamp(2rem, 5vh, 3rem); gap: .5rem; }
+.tm-mark-svg { height: clamp(3rem, 7vw, 4.5rem); width: auto; color: inherit; }
+.tm-mark.small .tm-mark-svg { height: 3.5rem; }
+
+/* A single hairline beneath the monogram — a structural device that
+   separates "brand mark" from "full names," not decoration. */
+.hero-rule { width: 28px; height: 1px; background: rgba(247, 243, 234, .55); margin: .5rem 0 .35rem; }
+
+.signature-name { display: inline-flex; align-items: baseline; flex-wrap: wrap; justify-content: center; font-size: clamp(1.65rem, 3.6vw, 2.75rem); font-weight: 500; letter-spacing: .04em; }
+.script-letter { font-family: 'Alex Brush', cursive; font-size: 1.5em; font-weight: 400; line-height: .5; }
+.ampersand { margin: 0 .45em; font-weight: 300; }
+.hero-date { font-size: .78rem; letter-spacing: .35em; margin: .35rem 0 0; opacity: .92; }
+.hero-kicker, .eyebrow { font-size: .68rem; letter-spacing: .28em; font-weight: 600; }
+.hero-kicker { opacity: .78; }
+.scroll-cue { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; margin-top: 2.25rem; font-size: .65rem; letter-spacing: .18em; opacity: .85; transition: opacity .3s ease; }
+.scroll-cue:hover, .scroll-cue:focus-visible { opacity: 1; }
+.scroll-cue:focus-visible { outline: 1px solid rgba(247, 243, 234, .8); outline-offset: 4px; }
+
+@media (max-width: 540px) {
+  /* Preserve faces on narrow crops — bias the focal point up slightly. */
+  .hero-image { object-position: 48% 14%; }
+  .hero-content { padding-bottom: clamp(2.25rem, 7svh, 3.5rem); }
+}
+
+.section { padding: clamp(5rem, 11vw, 10rem) clamp(1.25rem, 6vw, 6rem); }
+.section-intro { max-width: 720px; margin-bottom: 5rem; }
+.section-intro.centered { margin-left: auto; margin-right: auto; text-align: center; }
+.section-intro h2 { font-size: clamp(2.6rem, 7vw, 6rem); line-height: .98; font-weight: 500; letter-spacing: -.05em; margin: .8rem 0 1.5rem; }
+.wedding-date-display { font-size: .78rem; letter-spacing: .32em; font-weight: 600; color: var(--ivory); opacity: .85; margin: -.5rem 0 0; }
+.section-intro p:not(.eyebrow) { max-width: 580px; line-height: 1.8; font-size: .95rem; }
+
+/* ---------- Our Story ---------- */
+.story { position: relative; }
+
+/* ---------- Our Story: centered photo/label/name/story/button ---------- */
+.person-story-list {
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 8vw, 5rem);
+}
+
+/* Everything stacked and centered: portrait, tag, name, story, button. */
+.person-story-centered { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.person-story-portrait-c {
+  width: clamp(120px, 24vw, 160px);
+  height: clamp(120px, 24vw, 160px);
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 14px 30px rgba(46, 26, 46, .2);
+}
+.person-story-label { font-size: .68rem; letter-spacing: .26em; font-weight: 600; color: var(--mauve); font-style: italic; }
+.person-story-name {
+  margin: .3rem 0 1rem;
+  text-transform: uppercase;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  letter-spacing: .04em;
+}
+.person-story-preview,
+.person-story-full { font-size: clamp(.95rem, 1.6vw, 1.05rem); line-height: 1.85; color: var(--charcoal); max-width: 460px; }
+.person-story-full p { margin-bottom: 1rem; }
+.person-story-full p:last-child { margin-bottom: 0; }
+.person-story-read-more-outline {
+  margin-top: 1.5rem;
+  border: 1px solid var(--purple);
+  background: transparent;
+  color: var(--purple);
+  padding: .85rem 2rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  letter-spacing: .16em;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color .25s ease, color .25s ease;
+}
+.person-story-read-more-outline:hover { background: var(--purple); color: var(--ivory); }
+
+/* ---------- The First Conversation ---------- */
+.first-conversation { margin-bottom: clamp(7rem, 13vw, 10rem); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.first-conversation-frame { margin: 0 auto; }
+.story-screenshot-frame {
+  width: min(320px, 100%);
+  background: linear-gradient(150deg, var(--purple) 0%, var(--purple-deep) 100%);
+  border-radius: 20px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.story-screenshot-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 44px rgba(20, 10, 26, .35);
+}
+.story-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(150deg, #EFE4E7 0%, #E7D9DE 55%, #C9AFC0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .story-screenshot-frame { width: 100%; max-width: 280px; padding: 1rem; }
+}
+.story-list { max-width: 1100px; margin: 0 auto; display: grid; gap: 6.5rem; }
+/* A single quiet line running behind every chapter, so the story reads as
+   one continuous journey rather than disconnected blocks. Deliberately
+   faint — it's a thread, not a divider. */
+.story-list-threaded { position: relative; }
+.story-list-threaded::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--mauve) 10%, var(--mauve) 90%, transparent);
+  opacity: .3;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+.story-list-threaded > * { position: relative; z-index: 1; }
+.story-moment { display: grid; }
+
+/* Side: alternating portrait image + copy — used for the two early memories */
+.story-side { grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 7vw, 7rem); align-items: center; }
+.story-side.reverse { grid-template-columns: .85fr 1.15fr; }
+.story-side.reverse .story-image-wrap { order: 2; }
+.story-side .story-image-wrap { aspect-ratio: 4 / 5; }
+
+.story-image-wrap { overflow: hidden; background: var(--grey); }
+.story-image { width: 100%; height: 100%; object-fit: cover; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; text-align: center; padding: 1.5rem; }
+
+.story-year { font-size: .7rem; letter-spacing: .2em; color: var(--mauve); }
+.story-year.light { color: rgba(247, 243, 234, .75); }
+.story-copy h3 { font-size: clamp(2rem, 4vw, 4rem); font-weight: 500; letter-spacing: -.04em; margin: .5rem 0 1rem; }
+.story-copy p { max-width: 420px; line-height: 1.9; font-size: .95rem; }
+
+.story-placeholder-label { font-size: .68rem; letter-spacing: .26em; font-weight: 600; color: var(--charcoal); opacity: .55; }
+.story-placeholder-hint { font-size: .62rem; letter-spacing: .1em; color: var(--charcoal); opacity: .4; }
+.story-placeholder-label.light, .story-placeholder-hint.light { color: var(--ivory); opacity: .7; }
+
+/* Digital memory — "How We Met." Two generic message shapes and a small
+   icon stand in for a photograph, since the relationship began online and
+   no real image of that moment exists. Deliberately abstract, not a
+   recreation of any specific messaging app. */
+.digital-wrap { background: linear-gradient(150deg, #EFE4E7 0%, #E7D9DE 60%, #D8D4D2 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 1.75rem; }
+.digital-screenshot { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 44px rgba(46, 26, 46, .18); }
+
+.story-full-text { overflow: hidden; }
+.story-full-text p { margin-bottom: 1rem; }
+.story-full-text p:last-child { margin-bottom: 0; }
+.story-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: 1.25rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .68rem;
+  letter-spacing: .2em;
+  font-weight: 600;
+  color: var(--purple);
+}
+.story-read-more:hover { opacity: .7; }
+.story-read-more-icon { transition: transform .35s ease; }
+.story-read-more-icon.is-open { transform: rotate(180deg); }
+
+/* Condensed story — one visual (the real screenshot), one intro chapter,
+   and the rest of the narrative folded behind a Read More toggle. */
+.story-condensed { max-width: 1100px; margin: 0 auto; }
+.story-more { overflow: hidden; display: flex; flex-direction: column; gap: 1.75rem; margin-top: 1.5rem; }
+.story-more-chapter h4 { font-size: 1.25rem; font-weight: 500; letter-spacing: -.02em; margin: .3rem 0 .5rem; }
+.story-more-chapter p { font-size: .9rem; line-height: 1.8; opacity: .85; max-width: 420px; }
+.story-read-more {
+  margin-top: 1.5rem;
+  background: none;
+  border: 1px solid var(--purple);
+  color: var(--purple);
+  padding: .7rem 1.6rem;
+  font-size: .66rem;
+  letter-spacing: .16em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: background-color .25s ease, color .25s ease;
+}
+.story-read-more:hover { background: var(--purple); color: var(--ivory); }
+
+/* Editorial photo collage — one dominant photograph filling the left
+   column at full height, two supporting shots stacked in a column beside
+   it. A simple gapped grid, not overlapping tiles — moderate rounded
+   corners on every tile, consistent gutter, no absolute positioning. */
+.story-collage { gap: clamp(1.5rem, 5vw, 3rem); }
+.collage-canvas {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(.75rem, 2vw, 1.25rem);
+  height: clamp(420px, 50vw, 560px);
+}
+.collage-tile {
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(66, 27, 99, .12);
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.collage-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* the-beginning: video-call screenshot as dominant needs to show the whole
+   frame rather than crop it, since it's UI/text, not a photograph. */
+.collage-canvas.the-beginning .collage-tile.dominant { background: var(--charcoal); }
+.collage-canvas.the-beginning .collage-tile.dominant img { object-fit: contain; object-position: 50% 50%; }
+.collage-canvas.the-beginning .collage-tile.supporting img { object-position: 50% 10%; }
+.collage-canvas.the-beginning .collage-tile.detail img { object-position: 50% 22%; }
+
+.collage-canvas.the-journey .collage-tile.dominant img { object-position: 50% 32%; }
+.collage-canvas.the-journey .collage-tile.supporting img { object-position: 50% 8%; }
+.collage-canvas.the-journey .collage-tile.detail img { object-position: 50% 25%; }
+
+.collage-tile.dominant { grid-row: 1 / 3; grid-column: 1; }
+.collage-tile.supporting { grid-row: 1; grid-column: 2; }
+.collage-tile.detail { grid-row: 2; grid-column: 2; }
+.collage-tile-hint { font-size: .58rem; letter-spacing: .18em; font-weight: 600; color: var(--charcoal); opacity: .4; text-align: center; padding: 0 .5rem; }
+
+.collage-copy { max-width: 460px; }
+.collage-copy .story-year { display: block; }
+
+/* Closing: "Now" — deliberately smaller and quieter, a bridge into the
+   Wedding Day section rather than another full moment */
+/* Proposal video — a large cinematic frame, not an embedded-video look.
+   Minimal centered play button; native controls take over once playing. */
+.story-video { display: flex; flex-direction: column; align-items: center; gap: 1.75rem; text-align: center; }
+.proposal-video-label { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
+.proposal-video-label .story-year { display: block; }
+.proposal-video-tagline { font-size: .95rem; opacity: .78; margin-top: .2rem; }
+.proposal-video-frame {
+  position: relative;
+  width: min(820px, 100%);
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--grey);
+  box-shadow: 0 30px 70px rgba(46, 26, 46, .16);
+}
+.proposal-video-el { width: 100%; height: 100%; object-fit: cover; display: block; background: black; }
+.proposal-video-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(150deg, #EFE4E7 0%, #E7D9DE 55%, #C9AFC0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.proposal-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .94);
+  color: var(--purple);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 3px; /* optically center the play triangle */
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .28);
+  transition: transform .3s ease;
+}
+.proposal-play-btn:hover:not(.is-disabled) { transform: translate(-50%, -50%) scale(1.07); }
+.proposal-play-btn.is-disabled { opacity: .55; cursor: not-allowed; }
+
+/* Closing: "Now" — deliberately smaller and quieter, a bridge into the
+   Wedding Day section rather than another full moment */
+.story-closing { grid-template-columns: 200px 1fr; gap: clamp(1.5rem, 5vw, 3.5rem); align-items: center; max-width: 640px; margin: 0 auto; }
+.story-image-wrap.closing { aspect-ratio: 1 / 1; border-radius: 20px; overflow: hidden; }
+.story-image-wrap.closing img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; display: block; }
+.closing-copy h3 { font-size: clamp(1.6rem, 3vw, 2.25rem); }
+.closing-copy p { font-size: .88rem; }
+
+/* Deeper, more muted purple than the base brand color, plus barely-visible
+   editorial texture: a faint architectural grid and a soft glow. The
+   oversized ceremony numerals (below) carry most of the visual depth;
+   this just adds a little structure behind them. Content stays the focus —
+   these are all under 6% opacity. */
+.dark-section {
+  position: relative;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat,
+    radial-gradient(circle at 86% 12%, rgba(247, 243, 234, .05) 0%, transparent 42%),
+    repeating-linear-gradient(to right, rgba(247, 243, 234, .045) 0, rgba(247, 243, 234, .045) 1px, transparent 1px, transparent 96px),
+    repeating-linear-gradient(to bottom, rgba(247, 243, 234, .045) 0, rgba(247, 243, 234, .045) 1px, transparent 1px, transparent 96px),
+    var(--purple-deep);
+  color: var(--ivory);
+  overflow: hidden;
+}
+
+/* Countdown — small and in-section, not a standalone block */
+.countdown { display: flex; align-items: baseline; justify-content: center; gap: clamp(.6rem, 2vw, 1.2rem); margin: 0 auto 4.5rem; }
+.countdown-unit { display: flex; align-items: baseline; gap: clamp(.6rem, 2vw, 1.2rem); }
+.countdown-unit > div { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+.countdown-sep { opacity: .35; font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 300; }
+.countdown-value { font-size: clamp(1.5rem, 3.6vw, 2.5rem); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.countdown-label { font-size: .58rem; letter-spacing: .22em; opacity: .6; font-weight: 600; }
+
+/* Ceremony journey — an editorial wedding-day programme rather than an
+   info table. Oversized numerals sit low-opacity behind each ceremony's
+   details; the connecting line carries a small integrated photograph
+   between the two moments. Holy Matrimony reads slightly stronger via a
+   brighter numeral and larger heading, not a heavier box. */
+.ceremony-journey { max-width: 880px; margin: 0 auto 5rem; display: flex; flex-direction: column; }
+.ceremony-block { display: flex; align-items: center; gap: clamp(1rem, 4vw, 2.5rem); padding: 1rem 0; }
+.ceremony-block.traditional { justify-content: flex-start; text-align: left; }
+.ceremony-block.holy { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
+.ceremony-numeral {
+  font-size: clamp(5rem, 14vw, 9rem);
+  font-weight: 700;
+  line-height: .78;
+  letter-spacing: -.04em;
+  color: rgba(247, 243, 234, .16);
+  flex-shrink: 0;
+}
+.ceremony-block.featured .ceremony-numeral { color: rgba(247, 243, 234, .32); }
+.ceremony-time { font-size: .68rem; letter-spacing: .25em; opacity: .75; }
+.ceremony-block.featured .ceremony-time { opacity: 1; }
+.ceremony-info h3 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 500; margin: .5rem 0 .3rem; }
+.ceremony-block.featured .ceremony-info h3 { font-size: clamp(2.1rem, 4.6vw, 3.6rem); }
+.ceremony-info p { opacity: .75; font-size: .9rem; }
+
+.ceremony-connector { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: .5rem 0 1.75rem; }
+.ceremony-connector-line { width: 1px; height: 2.75rem; background: rgba(247, 243, 234, .3); }
+.ceremony-photo-accent {
+  width: 108px;
+  height: 136px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #EFE4E7 0%, #E7D9DE 60%, #D8D4D2 100%);
+  border: 6px solid var(--ivory);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, .35);
+  transform: rotate(-4deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ceremony-photo-accent img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; display: block; }
+.ceremony-photo-hint { font-size: .55rem; letter-spacing: .12em; color: var(--charcoal); opacity: .45; text-align: center; padding: 0 .5rem; }
+
+/* Invitation — an interactive flip card. Closed by default (an envelope
+   with the monogram); tapping reveals the full invitation on the reverse
+   face. A 3D flip, not a modal or a static card. */
+.invitation-wrap { perspective: 1800px; margin: 0 auto 4rem; }
+.invitation-card {
+  position: relative;
+  width: min(440px, 100%);
+  min-height: 480px;
+  margin: 0 auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform .9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.invitation-card.is-open { transform: rotateY(180deg); }
+.invitation-card.no-flip { transition: none; }
+.invitation-card:focus-visible { outline: 1px solid rgba(247, 243, 234, .8); outline-offset: 6px; }
+
+.invitation-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .85rem;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .18);
+}
+.invitation-front { background: var(--purple); color: var(--ivory); border: 1px solid rgba(247, 243, 234, .2); }
+.invitation-front .tm-mark-svg { height: 3.5rem; }
+.invitation-eyebrow { font-size: .68rem; letter-spacing: .28em; font-weight: 600; opacity: .85; margin-top: .5rem; }
+.invitation-tap { font-size: .62rem; letter-spacing: .2em; opacity: .55; margin-top: 1.5rem; }
+
+.invitation-back { background: var(--ivory); color: var(--purple); transform: rotateY(180deg); gap: 1rem; }
+.invitation-back-image { padding: 0; }
+.invitation-back-image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.invitation-date { letter-spacing: .25em; font-size: .75rem; }
+.invitation-copy { line-height: 1.8; font-size: .92rem; }
+.invitation-order { display: flex; flex-direction: column; gap: .4rem; margin-top: .5rem; font-size: .68rem; letter-spacing: .12em; opacity: .75; }
+
+/* Dress code — a compact strip, not its own section */
+.dress-code { max-width: 420px; margin: 0 auto; text-align: center; }
+.dress-code-label { font-size: .62rem; letter-spacing: .24em; font-weight: 600; opacity: .65; }
+.dress-code-swatches { display: flex; justify-content: center; gap: .5rem; margin: .85rem 0; }
+.swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(247, 243, 234, .35); }
+.dress-code-note { font-size: .82rem; line-height: 1.7; opacity: .8; }
+
+.venue { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; }
+.venue-copy h2 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 500; line-height: 1; letter-spacing: -.05em; }
+.venue-name { font-size: 1.1rem; font-weight: 500; margin: 1.75rem 0 0; }
+.venue-meta { display: flex; gap: .75rem; align-items: center; margin: .6rem 0 1.4rem; color: var(--charcoal); opacity: .85; }
+.venue-landmark { max-width: 480px; line-height: 1.8; font-size: .9rem; opacity: .8; margin-bottom: 1.75rem; }
+.text-link { color: var(--purple); font-size: .7rem; font-weight: 600; letter-spacing: .15em; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem; }
+.venue-directions:hover { opacity: .75; }
+.map-frame { min-height: 420px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(46, 26, 46, .12); }
+.map-frame iframe { width: 100%; height: 100%; min-height: 420px; display: block; }
+
+/* ---------- Cash Gift ---------- */
+.gifts { background: var(--ivory); text-align: center; }
+.cash-gift-card { max-width: 460px; margin: 0 auto 2.25rem; border: 1px solid rgba(66, 27, 99, .18); border-radius: 20px; overflow: hidden; text-align: left; }
+.cash-gift-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.4rem; border-bottom: 1px solid rgba(66, 27, 99, .1); }
+.cash-gift-row:last-child { border-bottom: none; }
+.cash-gift-label { font-size: .6rem; letter-spacing: .2em; font-weight: 600; color: var(--mauve); }
+.cash-gift-value { font-size: .92rem; font-weight: 500; }
+.cash-gift-copy { background: none; border: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; text-align: right; }
+.cash-gift-copy-hint { display: inline-flex; align-items: center; gap: .35rem; font-size: .58rem; letter-spacing: .1em; color: var(--purple); opacity: .65; transition: opacity .2s ease; }
+.cash-gift-copy:hover .cash-gift-copy-hint { opacity: 1; }
+
+.cash-gift-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: .75rem; }
+.cash-gift-physical-note { font-size: .82rem; opacity: .7; margin-bottom: .1rem; }
+.cash-gift-cta {
+  border: 1px solid var(--purple);
+  background: var(--purple);
+  color: white;
+  padding: 1rem 2.25rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  letter-spacing: .16em;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  cursor: pointer;
+}
+.cash-gift-cta.is-disabled { background: var(--grey); border-color: var(--grey); color: var(--charcoal); opacity: .7; cursor: not-allowed; }
+.cash-gift-cta-note { font-size: .78rem; opacity: .65; max-width: 340px; text-align: center; }
+
+/* ---------- Gallery ---------- */
+.gallery { background: var(--blush); overflow: hidden; }
+.gallery-track {
+  position: relative;
+  height: clamp(300px, 46vw, 480px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y;
+  cursor: grab;
+  margin-bottom: 1.75rem;
+}
+.gallery-track:active { cursor: grabbing; }
+.gallery-item {
+  position: absolute;
+  width: clamp(220px, 34vw, 380px);
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  background: var(--grey);
+  box-shadow: 0 20px 50px rgba(46, 26, 46, .18);
+  cursor: pointer;
+}
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.gallery-caption { text-align: center; font-size: .68rem; letter-spacing: .22em; font-weight: 600; color: var(--purple); min-height: 1em; }
+.gallery-controls { display: flex; align-items: center; justify-content: center; gap: 1.25rem; margin-top: 1.5rem; }
+.gallery-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--purple); background: transparent; color: var(--purple); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color .25s ease, color .25s ease; flex-shrink: 0; }
+.gallery-btn:hover { background: var(--purple); color: var(--ivory); }
+.gallery-dots { display: flex; align-items: center; gap: .45rem; }
+.gallery-dot { width: 6px; height: 6px; border-radius: 3px; background: var(--mauve); opacity: .4; transition: all .3s ease; }
+.gallery-dot.is-active { opacity: 1; background: var(--purple); width: 18px; }
+
+@media (max-width: 640px) {
+  .gallery-item { width: clamp(180px, 58vw, 260px); }
+}
+
+/* ---------- Paper edge transition ---------- */
+/* A soft deckled edge, used only between Wedding Day → Venue and
+   Venue → Gallery, to mark those as chapter transitions rather than
+   plain section breaks. Colored to match the section it reveals. */
+.paper-edge { position: absolute; left: 0; right: 0; height: 32px; line-height: 0; z-index: 2; pointer-events: none; }
+.paper-edge-bottom { bottom: 0; }
+.paper-edge-top { top: 0; transform: scaleY(-1); }
+.paper-edge svg { display: block; width: 100%; height: 100%; }
+
+
+/* ---------- FAQ ---------- */
+.faq-list { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+.faq-item { border-bottom: 1px solid rgba(66, 27, 99, .14); }
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 500;
+  color: var(--purple);
+}
+.faq-chevron { flex-shrink: 0; transition: transform .35s ease; color: var(--mauve); }
+.faq-chevron.is-open { transform: rotate(180deg); }
+.faq-answer-wrap { overflow: hidden; }
+.faq-answer { padding: 0 0 1.75rem; max-width: 560px; line-height: 1.8; color: var(--charcoal); }
+.faq-contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: fit-content;
+  margin: 3rem auto 0;
+  border: 1px solid var(--purple);
+  background: var(--purple);
+  color: white;
+  padding: 1rem 2.25rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  letter-spacing: .16em;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer { position: relative; overflow: hidden; min-height: 100svh; display: flex; align-items: flex-end; justify-content: center; color: var(--ivory); }
+/* Full-bleed closing photo; framed high so both faces clear the text below. */
+.footer-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+.footer-bg-placeholder { background: linear-gradient(160deg, #5a2c80 0%, var(--purple) 50%, #2c1240 100%); }
+.footer-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, .52); }
+.footer-kicker { color: var(--ivory); opacity: .82; margin-bottom: .5rem; }
+.footer-content { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; padding: 4.5rem 1.5rem; }
+.footer .tm-mark-svg { height: 4.5rem; }
+.footer-date { font-size: .78rem; letter-spacing: .3em; opacity: .9; }
+.footer-closing-line { font-size: .78rem; letter-spacing: .12em; opacity: .85; margin-top: .5rem; }
+
+@media (max-width: 760px) {
+  .story-side, .story-side.reverse, .story-closing, .venue { grid-template-columns: 1fr; gap: 1.75rem; }
+  .story-side.reverse .story-image-wrap { order: initial; }
+  .story-list { gap: 4rem; }
+  .story-closing { text-align: center; }
+  .story-image-wrap.closing { width: 140px; margin: 0 auto; }
+
+  /* On mobile the grid becomes: dominant image on top, the two smaller
+     tiles side by side beneath it — same tiles, simpler arrangement. */
+  .collage-canvas {
+    height: auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+  .collage-tile.dominant { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 4 / 5; }
+  .collage-tile.supporting { grid-column: 1; grid-row: 2; aspect-ratio: 1 / 1; }
+  .collage-tile.detail { grid-column: 2; grid-row: 2; aspect-ratio: 1 / 1; }
+
+  .ceremony-block, .ceremony-block.holy { flex-direction: column; text-align: center; gap: .5rem; }
+  .ceremony-numeral { font-size: clamp(3.5rem, 20vw, 5rem); }
+  .map-frame { min-height: 300px; }
+  .map-frame iframe { min-height: 300px; }
+  .invitation-card { min-height: 420px; }
+  .invitation-face { padding: 2.25rem; }
+  .countdown { gap: .5rem; margin-bottom: 3.5rem; }
+  .countdown-unit { gap: .5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
