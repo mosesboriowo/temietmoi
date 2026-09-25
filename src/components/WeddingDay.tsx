@@ -147,15 +147,14 @@ function InvitationCard() {
 function DressCode() {
   return (
     <div className="dress-code">
-      <span className="dress-code-label">DRESS CODE</span>
+      <span className="dress-code-label">COLOR OF THE DAY</span>
       <div className="dress-code-swatches" aria-hidden="true">
-        <span className="swatch" style={{ background: 'var(--purple)' }} />
-        <span className="swatch" style={{ background: 'var(--mauve)' }} />
-        <span className="swatch" style={{ background: 'var(--blush)' }} />
-        <span className="swatch" style={{ background: 'var(--grey)' }} />
+        <span className="swatch" style={{ background: '#722F37' }} />
+        <span className="swatch" style={{ background: '#6F4A2E' }} />
+        <span className="swatch" style={{ background: '#F4C7A1' }} />
       </div>
       <p className="dress-code-note">
-        Aso-ebi &amp; formal attire — shades of purple, mauve and neutral tones welcome.
+        Aso-ebi &amp; formal attire — shades of wine, brown and peach welcome.
       </p>
     </div>
   )

@@ -34,7 +34,7 @@ function Gallery() {
     <section id="gallery" className="gallery section">
       <div className="section-intro centered">
         <p className="eyebrow">MOMENTS SO FAR</p>
-        <h2>Moments, so far.</h2>
+        <h2>Gallery</h2>
       </div>
 
       <motion.div
